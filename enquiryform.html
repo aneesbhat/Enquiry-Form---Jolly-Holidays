@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jolly Holidays Enquiry Form</title>
+    <link href="images/JOLLY_Official_Logo_Jpg-removebg-preview.png" rel="website icon" type="png">
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-panel {
+            width: 55%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+        }
+
+        .left-panel img {
+            /* box-shadow:0px 0px 20px 3px rgb(14, 158, 86); */
+        }
+
+        #cover {
+            box-shadow:0px 0px 20px 3px rgb(14, 158, 86);
+        }
+
+        
+        .right-panel {
+            width: 65%;
+            padding: 20px;
+        }
+
+        .progress-container {
+            margin-bottom: 10px; /* Removed fixed width */
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            height: 80px;
+            
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <img src="images/JOLLY_Official_Logo_Jpg-removebg-preview.png" alt="Jolly Holidays" width="100px" height="100px">
+            <img id="cover" src="images/game-of-thrones-4917988_1920.jpg">
+            <h1>Jolly Holidays</h1>
+            <p>Jolly Holidays is the leading travel agency in Jammu and Kashmir, offering unparalleled travel experiences and crafting unforgettable memories for our valued customers. We are committed to providing exceptional service and personalized itineraries that cater to every traveler's unique preferences and desires. Your contact information is end-to-end encrypted and securely stored in our database, ensuring your privacy and data protection.</p>
+            <p>&copy; Jolly Holidays</p>
+            
+        </div>
+        <div class="right-panel">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+            </div>
+            <p id="progress-text">0 of 3 Completed</p>
+            <h2>Presentation</h2>
+            <h3>Personal Info</h3>
+            <form id="application-form">
+                <div class="form-group">
+                    <label for="name">First and Last Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="remarks">Remarks (Optional)</label>
+                    <textarea id="remarks" name="remarks" rows="4"></textarea>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('application-form');
+        const progress = document.getElementById('progress');
+        const progressText = document.getElementById('progress-text');
+        const formElements = form.querySelectorAll('input[type="text"], input[type="email"]');
+
+        let completedFields = 0;
+
+        formElements.forEach(element => {
+            element.addEventListener('input', updateProgress);
+        });
+
+        function updateProgress() {
+            completedFields = 0;
+            formElements.forEach(element => {
+                if (element.value.trim() !== '') {
+                    completedFields++;
+                }
+            });
+
+            const totalFields = formElements.length;
+            const percentage = (completedFields / totalFields) * 100;
+
+            progress.style.width = percentage + '%';
+            progressText.textContent = completedFields + ' of ' + totalFields + ' Completed';
+        }
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            fetch('/your-api-endpoint', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Application submitted successfully!');
+                    form.reset();
+                    updateProgress();
+                } else {
+                    alert('Error submitting application. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
+            });
+        });
+    </script>
+</body>
+</html>
